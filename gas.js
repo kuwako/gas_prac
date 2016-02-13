@@ -1,3 +1,17 @@
+function sendReport() {
+  var sum = 0;
+  var sheet = SpreadsheetApp.getActiveSheet();
+  
+  for (var i = 1; i <= sheet.getLastRow(); i++) {
+    if (sheet.getRange(i, 2).getValue() >= 70) {
+      sum++;
+    }
+  }
+  
+  MailApp.sendEmail("m.kuwako0702@gmail.com", "合格者数", "合格者は" + sum + "人です。");
+  
+}
+
 function onEdit(e) {
   e.range.setComment("edited by: " + e.user.getEmail()); 
 }
