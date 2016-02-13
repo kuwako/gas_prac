@@ -1,7 +1,7 @@
-function myFunction() {
+function setData() {
+  var spreadSheet = SpreadsheetApp.getActiveSpreadsheet();
+  var sheet = spreadSheet.getActiveSheet();
+  var range = sheet.getRange("A1");
   
-  // aaa
-  Logger.log("hello world");
-  
-  Browser.msgBox("hello");
+  range.setValue(100);
 }
