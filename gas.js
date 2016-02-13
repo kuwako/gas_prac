@@ -1,4 +1,8 @@
-function showMenu() {
+function onEdit(e) {
+  e.range.setComment("edited by: " + e.user.getEmail()); 
+}
+
+function onOpen() {
   var ss = SpreadsheetApp.getActiveSpreadsheet();
   var menu = [
     {name: "初期化", functionName: "initSheet"},
@@ -6,8 +10,6 @@ function showMenu() {
    ];
   ss.addMenu("処理メニュー", menu);
 }
-
-
 
 function initSheet() {
   var sheet = SpreadsheetApp.getActiveSheet();
