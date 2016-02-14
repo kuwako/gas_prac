@@ -1,49 +1,89 @@
-function sendReport() {
-  var sum = 0;
-  var sheet = SpreadsheetApp.getActiveSheet();
+function mailSearch() {
+  var searchText = "label:bt-応募がありました -{テスト} -{てすと} after:";
+  var date = new Date();
+  var today = date.getFullYear() + '/' + (date.getMonth() + 1) + '/' + date.getDate();    // 2016/2/14 
+  searchText += today;  // Gmail上の検索文言指定
   
-  for (var i = 1; i <= sheet.getLastRow(); i++) {
-    if (sheet.getRange(i, 2).getValue() >= 70) {
-      sum++;
+  var threads = GmailApp.search(searchText);
+  var sheet = SpreadsheetApp.getActiveSheet();
+  var pepperNum = 20; // 何CVごとにPepperBotを飛ばすか
+  sheet.clear();
+  var msgNum = 0;
+  
+  for(var i = 0; i < threads.length; i++) {
+    var messages = threads[i].getMessages();
+    
+    // スレッド内のメッセージごとに処理
+    for(var j = 0; j < messages.length; j++) {
+      msgNum++;
+      
+      // TODO そのうちアプリのCV時にも送るようにする。
     }
   }
   
-  MailApp.sendEmail("m.kuwako0702@gmail.com", "合格者数", "合格者は" + sum + "人です。");
-  
+  // 
+  if (msgNum % pepperNum == 0 && msgNum > 1) {
+    sendTotalCvNum(msgNum);
+  } 
 }
 
-function onEdit(e) {
-  e.range.setComment("edited by: " + e.user.getEmail()); 
+function sendTotalCvNum(msgNum) {
+  var pepperMsg = "現在" + msgNum + "CVです。\n";
+  
+  switch(Math.floor(msgNum/20)) {
+    case 1:
+      pepperMsg += "まだまだこれからー( ✧Д✧)";
+      break;
+    case 2:
+      pepperMsg += "昼前なら順調！( ◉ ∀ ◉ )";
+      break;
+    case 3:
+      pepperMsg += "おやつ食べた？( ⓛ ω ⓛ *)";
+      break;
+    case 4:
+      pepperMsg += "おなか空いたー(*´ω｀*)";
+      break;
+    case 5:
+      pepperMsg += "1 0 0 CV \n( ・ˇ∀ˇ・)ｱﾊハ八ﾉヽﾉヽﾉ ＼ / ＼";
+      break;
+    case 6:
+      pepperMsg += "そろそろ眠くない？ (・ー・) ";
+      break;
+    case 7:
+      pepperMsg += "絶好調！！！ \n(　´,_ゝ｀)ｸｯｸｯｸ･･･(　´∀｀)ﾌﾊﾊﾊﾊ･･･(　 ﾟ∀ﾟ)ﾊｧｰﾊｯﾊｯﾊｯﾊ!!";
+      break;
+    default:
+      pepperMsg += "燃えろぉぉぉおおぉぉぉおぉぉおぉぉぉお─=≡Σ((( つ•̀ω•́)つ"
+  }
+  
+  sendPepperBot("bt_all", pepperMsg);
+}
+
+function sendPepperBot(channel, text) {
+  // 引数がなかった場合
+  if (!channel) {
+    channel = "kuwako_test";
+  };
+  if (!text) {
+    text = "Hi, I am Pepper. How are you?"; 
+  }
+  
+  var slack_url = "https://hooks.slack.com/services/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",
+  
+  res = UrlFetchApp.fetch(slack_url, {
+    payload : JSON.stringify({
+      channel : channel,
+      text : text,
+    })
+  });
+  
+  Logger.log(res);
 }
 
 function onOpen() {
   var ss = SpreadsheetApp.getActiveSpreadsheet();
   var menu = [
-    {name: "初期化", functionName: "initSheet"},
-    {name: "判定", functionName: "getResults"}
+    {name: "メール検索&処理実行", functionName: "mailSearch"},
    ];
   ss.addMenu("処理メニュー", menu);
-}
-
-function initSheet() {
-  var sheet = SpreadsheetApp.getActiveSheet();
-  var names = ["taguchi", "fkoji", "dotinstall"];
-  
-  sheet.clear();
-  for (var i = 1; i <= 20; i++) {
-    sheet.getRange(i, 1).setValue(names[Math.floor(Math.random() * names.length)]); 
-    sheet.getRange(i, 2).setValue(Math.floor(Math.random() * 101)); 
-  }  
-}
-
-function getResults() {
-  var sheet = SpreadsheetApp.getActiveSheet();
-  for (var i = 1; i <= sheet.getLastRow(); i++) {
-    if (sheet.getRange(i, 2).getValue() >= 70) {
-      sheet.getRange(i, 3).setValue("OK").setBackground("green");
-    } else {
-      sheet.getRange(i, 3).setValue("NG").setBackground("red");
-    }
-  }  
- 
 }
