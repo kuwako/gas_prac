@@ -53,7 +53,7 @@ function sendTotalCvNum(msgNum) {
       pepperMsg += "絶好調！！！ \n(　´,_ゝ｀)ｸｯｸｯｸ･･･(　´∀｀)ﾌﾊﾊﾊﾊ･･･(　 ﾟ∀ﾟ)ﾊｧｰﾊｯﾊｯﾊｯﾊ!!";
       break;
     default:
-      pepperMsg += "燃えろぉぉぉおおぉぉぉおぉぉおぉぉぉお─=≡Σ((( つ•̀ω•́)つ"
+      pepperMsg += "燃えろぉぉぉおおぉぉぉおぉぉおぉぉぉお─=≡Σ((( つ•̀ω•́)つ";
   }
   
   sendPepperBot("bt_all", pepperMsg);
@@ -68,7 +68,7 @@ function sendPepperBot(channel, text) {
     text = "Hi, I am Pepper. How are you?"; 
   }
   
-  var slack_url = "https://hooks.slack.com/services/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",
+  var slack_url = "https://hooks.slack.com/services/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";
   
   res = UrlFetchApp.fetch(slack_url, {
     payload : JSON.stringify({
